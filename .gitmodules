@@ -1,0 +1,6 @@
+[submodule "utils/ffmpeg"]
+	path = utils/ffmpeg
+	url = https://github.com/bchamand/pyFFmpeg
+[submodule "utils/download"]
+	path = utils/download
+	url = https://github.com/bchamand/pyDownload
