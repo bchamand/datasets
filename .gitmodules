@@ -1,6 +1,0 @@
-[submodule "utils/ffmpeg"]
-	path = datasets/utils/ffmpeg
-	url = https://github.com/bchamand/pyFFmpeg
-[submodule "utils/download"]
-	path = datasets/utils/download
-	url = https://github.com/bchamand/pyDownload
