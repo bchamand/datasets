@@ -28,7 +28,8 @@ copyright = f"{datetime.datetime.now().year}, {author}."
 
 github_user = "bchamand"
 github_repo = project
-
+github_version = version
+git_revision = ""
 
 def subprocess_cmd(cmd):
     res = subprocess.run(
@@ -36,8 +37,6 @@ def subprocess_cmd(cmd):
     )
     return res.stdout.strip().decode("utf-8")
 
-
-github_version = version
 try:
     list_tags = subprocess_cmd("git tag --list --sort=-v:refname").split("\n")
     github_version = f"v{version}"
@@ -46,7 +45,6 @@ try:
 except:
     pass
 
-git_revision = ""
 try:
     git_revision = subprocess_cmd("git rev-parse --short HEAD")
 except:

@@ -4,7 +4,8 @@ from typing import Callable, Tuple
 import torch
 import torch.utils.data as data
 
-from .utils import download_and_extract_archive, load_audio
+from avreader import load_audio
+from downloader import download_and_extract_archive
 
 __all__ = ["SpeechCommandsDataset"]
 
