@@ -7,10 +7,10 @@ import torch.utils.data as data
 from avreader import load_audio
 from downloader import download_and_extract_archive
 
-__all__ = ["SpeechCommandsDataset"]
+__all__ = ["SpeechCommands", "SpeechCommandsV2", "SpeechCommandsV1"]
 
 
-class SpeechCommandsDataset(data.Dataset):
+class SpeechCommands(data.Dataset):
     """[summary]
 
     Parameters
@@ -34,8 +34,9 @@ class SpeechCommandsDataset(data.Dataset):
 
     """
 
-    base_folder = "speech_commands"
+    base_folder = "speech_commands/v0.02"
     url = "http://download.tensorflow.org/data/speech_commands_v0.02.tar.gz"
+    md5 = "6b74f3901214cb2c2934e98196829835"
     filename = url.rpartition("/")[2]
 
     splits = ("train", "val", "test")
@@ -62,10 +63,10 @@ class SpeechCommandsDataset(data.Dataset):
                 + " You can use download=True to download it"
             )
 
-        self.classes, self.class_to_idx = self._find_classes(self.root)
+        self.classes, self.class_to_idx = self._find_classes(os.path.join(self.root, self.base_folder))
 
-        self.data, self.labels = self._make_dataset(
-            os.path.abspath(self.root), split, self.classes, self.class_to_idx
+        self.data, self.targets = self._make_dataset(
+            os.path.join(os.path.abspath(self.root), self.base_folder), split, self.classes, self.class_to_idx
         )
 
     def _find_classes(self, path: str) -> Tuple[list, dict]:
@@ -90,13 +91,13 @@ class SpeechCommandsDataset(data.Dataset):
         # load data and labels depending on the split part
         if split == "test":
             data = test_files
-            labels = [os.path.dirname(fpath) for fpath in test_files]
+            targets = [class_to_idx[os.path.dirname(fpath)] for fpath in test_files]
         elif split == "val":
             data = eval_files
-            labels = [os.path.dirname(fpath) for fpath in eval_files]
+            targets = [class_to_idx[os.path.dirname(fpath)] for fpath in eval_files]
         else:
             data = []
-            labels = []
+            targets = []
             test_eval_files = test_files + eval_files
             for classe in self.classes:
                 for entry in os.scandir(os.path.join(path, classe)):
@@ -109,12 +110,12 @@ class SpeechCommandsDataset(data.Dataset):
             # removes the test and validation file paths to keep only the
             # training file paths
             data = list(set(data) - set(test_eval_files))
-            labels = [os.path.dirname(fpath).rpartition("/")[2] for fpath in data]
+            targets = [class_to_idx[os.path.dirname(fpath).rpartition("/")[2]] for fpath in data]
 
-        return data, labels
+        return data, torch.tensor(targets)
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        audio_path, target = self.data[index], self.labels[index]
+        audio_path, target = self.data[index], self.targets[index]
         audio, fs = load_audio(audio_path)
         if self.transform is not None:
             audio = self.transform(audio)
@@ -148,3 +149,11 @@ class SpeechCommandsDataset(data.Dataset):
         body.append("Target transforms:")
         lines = [head] + [" " * 4 + line for line in body]
         return "\n".join(lines)
+
+
+
+class SpeechCommandsV1(SpeechCommands):
+    url = "https://storage.googleapis.com/download.tensorflow.org/data/speech_commands_v0.01.tar.gz"
+    md5 = "3cd23799cb2bbdec517f1cc028f8d43c"
+
+SpeechCommandsV2 = SpeechCommands
