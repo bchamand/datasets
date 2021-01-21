@@ -8,7 +8,7 @@ import torch.utils.data as data
 from avreader import load_audio
 from downloader import download_and_extract_archive
 
-__all__ = ["SpeechCommandsDataset"]
+__all__ = ["SpeechCommands", "SpeechCommandsV2", "SpeechCommandsV1"]
 
 
 class SpeechCommands(data.Dataset):
