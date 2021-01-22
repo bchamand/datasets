@@ -69,6 +69,11 @@ class SpeechCommands(data.Dataset):
             os.path.join(os.path.abspath(self.root), self.base_folder), split, self.classes, self.class_to_idx
         )
 
+    # @property
+    # def class_to_idx(self) -> Dict[str, int]:
+    #     return {_class: i for i, _class in enumerate(self.classes)}
+
+
     def _find_classes(self, path: str) -> Tuple[list, dict]:
         classes = [
             d.name
@@ -115,12 +120,15 @@ class SpeechCommands(data.Dataset):
         return data, torch.tensor(targets)
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        audio_path, target = self.data[index], self.targets[index]
+        audio_path, target = self.data[index], int(self.targets[index])
         audio, fs = load_audio(audio_path)
+
         if self.transform is not None:
             audio = self.transform(audio)
+
         if self.target_transform is not None:
             targer = self.target_transform(target)
+
         return audio, target
 
     def __len__(self) -> int:
