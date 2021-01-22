@@ -4,6 +4,7 @@ import torch
 
 # key = lambda x, y, z: (1, 2, 4)
 
+__all__ = ["ZipDataset"]
 
 class ZipDataset(Dataset):
     def __init__(self, *datasets, key):
