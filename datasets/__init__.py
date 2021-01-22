@@ -3,6 +3,3 @@ from datasets.data import ZipDataset
 
 __version__ = "0.1.0-dev0"
 __all__ = ("SpeechCommands", "ZipDataset")
-
-del speech_commands
-del data

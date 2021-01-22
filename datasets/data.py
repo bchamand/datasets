@@ -7,7 +7,7 @@ import torch
 __all__ = ["ZipDataset"]
 
 class ZipDataset(Dataset):
-    def __init__(self, *datasets, key):
+    def __init__(self, datasets, key):
         super(ZipDataset, self).__init__()
         self.datasets = datasets
 
