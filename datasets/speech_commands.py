@@ -4,6 +4,8 @@ from typing import Callable, Tuple
 import torch
 import torch.utils.data as data
 
+import torchaudio
+
 from avreader import load_audio
 from downloader import download_and_extract_archive
 
@@ -96,10 +98,10 @@ class SpeechCommands(data.Dataset):
         # load data and labels depending on the split part
         if split == "test":
             data = test_files
-            targets = [class_to_idx[os.path.dirname(fpath)] for fpath in test_files]
+            targets = [class_to_idx[os.path.dirname(fpath).rpartition("/")[2]] for fpath in test_files]
         elif split == "val":
             data = eval_files
-            targets = [class_to_idx[os.path.dirname(fpath)] for fpath in eval_files]
+            targets = [class_to_idx[os.path.dirname(fpath).rpartition("/")[2]] for fpath in eval_files]
         else:
             data = []
             targets = []
